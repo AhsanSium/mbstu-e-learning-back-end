@@ -8,7 +8,7 @@ var multer = require("multer");
 let lecturemodel = require("../../models/Lecture.js");
 
 /*Get videos*/
-router.get("/lectures", function(req, res) {
+router.get("/lectures", function (req, res) {
   lecturemodel
     .find({
       course: req.query.id
@@ -28,11 +28,11 @@ router.get("/lectures", function(req, res) {
 });
 
 /* POST videos*/
-router.post("/lectures/localupload", function(req, res) {
+router.post("/lectures/localupload", function (req, res) {
   // res.send('this is post route upload');
   //  console.log(req.files.file);
 
-  coursemodel.find({ courseName: req.body.course }, function(error, cat) {
+  coursemodel.find({ courseName: req.body.course }, function (error, cat) {
     if (!error && cat) {
       //console.log(cat)
       req.body.course = cat[0]._id;
@@ -40,7 +40,7 @@ router.post("/lectures/localupload", function(req, res) {
     console.log(req.files);
     if (req.files != undefined) {
       let imagefile = req.files.file;
-      imagefile.mv(`Client/public/assets/${req.files.file.name}`);
+      imagefile.mv(`../Client/public/assets/${req.files.file.name}`);
       if (imagefile) {
         req.body.videoLink = "/assets/" + imagefile.name;
       }
@@ -48,6 +48,7 @@ router.post("/lectures/localupload", function(req, res) {
       console.log(req.body.videoLink);
       //req.body.videoLink=req.body.youtubelink;
     }
+    console.log(req.body);
     const upload = new lecturemodel(req.body).save();
     res.send("this is post route upload");
     // res.redirect('back');

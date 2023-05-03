@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const LectureSchema = new Schema({
-    no:{
+    no: {
         type: Number,
         required: false
     },
@@ -14,7 +14,11 @@ const LectureSchema = new Schema({
         type: String,
         required: true
     },
-    course : { type: Schema.Types.ObjectId, ref: 'Course' }
-}, { timestamps : { uploadedAt: 'created_at'}});
+    lectureType: {
+        type: String,
+        required: true
+    },
+    course: { type: Schema.Types.ObjectId, ref: 'Course' }
+}, { timestamps: { uploadedAt: 'created_at' } });
 
-module.exports = Lecture = mongoose.model('lectures',  LectureSchema)
+module.exports = Lecture = mongoose.model('lectures', LectureSchema)
