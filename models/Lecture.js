@@ -14,8 +14,16 @@ const LectureSchema = new Schema({
         type: String,
         required: true
     },
+    lectureText: {
+        type: String,
+        required: true
+    },
     lectureType: {
         type: String,
+        required: true
+    },
+    quiz: {
+        type: Object,
         required: true
     },
     course: { type: Schema.Types.ObjectId, ref: 'Course' }

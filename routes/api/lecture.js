@@ -38,17 +38,17 @@ router.post("/lectures/localupload", function (req, res) {
       req.body.course = cat[0]._id;
     }
     console.log(req.files);
-    if (req.files != undefined) {
+    if (req.files != undefined && req.body.lectureType === "video") {
       let imagefile = req.files.file;
       imagefile.mv(`../Client/public/assets/${req.files.file.name}`);
       if (imagefile) {
         req.body.videoLink = "/assets/" + imagefile.name;
       }
     } else {
-      console.log(req.body.videoLink);
+      console.log("Video Link", req.body.videoLink);
       //req.body.videoLink=req.body.youtubelink;
     }
-    console.log(req.body);
+    console.log("Request Body", req.body);
     const upload = new lecturemodel(req.body).save();
     res.send("this is post route upload");
     // res.redirect('back');
