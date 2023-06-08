@@ -9,10 +9,11 @@ const enroll = require("./routes/api/enrollRoute");
 const role = require("./routes/api/role");
 const lecture = require("./routes/api/lecture");
 const fileUpload = require('express-fileupload');
-var multer = require('multer')
+var multer = require('multer');
 var cors = require('cors');
 const profile = require('./routes/api/profile');
-
+const postRouter = require("./routes/api/post");
+const path = require("path");
 
 const app = express();
 
@@ -28,6 +29,9 @@ app.use(fileUpload());
 //Body Parser
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 1000000 }));
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
+
+const directory = path.join(__dirname, './images');
+app.use("/images", express.static(directory));
 
 //Connect to mongodb through mongoose
 mongoose
@@ -46,6 +50,7 @@ app.use(category);
 app.use(lecture);
 app.use(enroll);
 app.use(role);
+app.use("/api/posts", postRouter);
 app.use("/api/profile", profile);
 
 const port = process.env.PORT || 5000;
