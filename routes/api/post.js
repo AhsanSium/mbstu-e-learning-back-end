@@ -1,8 +1,8 @@
 // let path=require('path');
 
 let express = require("express");
-let router = express.Router();
 const Post = require('../../models/post');
+let router = express.Router();
 const multer = require("multer");
 
 
@@ -45,7 +45,10 @@ router.post("",
 
     multer({ storage: storage }).single("image"),
     (req, res, next) => {
-        console.log(req.body)
+        console.log(" API POST BODY ", req.body, req.file);
+        const obj = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+
+        console.log(obj);
         const url = req.protocol + "://" + req.get("host")
         console.log(url)
         const post = new Post({
@@ -81,7 +84,66 @@ router.post("",
                 console.log(e)
                 res.status(501).json({ message: "Error Adding Post" + e });
             })
+    }
+)
+
+
+router.post('/upload', (req, res) => {
+    // Get the file that was set to our field named "image"
+    const { image } = req.files;
+
+    console.log(req.files);
+
+    console.log("Body", req.body);
+
+    // If no image submitted, exit
+    if (!image) return res.sendStatus(400);
+
+    // If does not have image mime type prevent from uploading
+    //if (/^image/.test(image.mimetype)) return res.sendStatus(400);
+
+    // Move the uploaded image to our upload folder
+    image.mv(__dirname + '/images/' + image.name);
+
+    // All good
+    //res.sendStatus(200);
+
+    const url = 'http://localhost:5000';
+
+    const post = new Post({
+        title: req.body.title,
+        content: req.body.content,
+        imagePath: url + "/images/" + image.name,
+        creator: req.body.id,
+        postDate: req.body.postDate,
     })
+    console.log(post)
+    post.save().
+        then(post => {
+            if (post) {
+                res.status(201).json({
+                    message: "Post added successfully",
+                    post: {
+                        ...post,
+                        id: post._id
+                    }
+                })
+            }
+
+            if (!post) {
+                res.status(404).json({
+                    message: "Error Adding Post",
+
+                })
+            }
+
+
+        })
+        .catch(e => {
+            console.log(e)
+            res.status(501).json({ message: "Error Adding Post" + e });
+        })
+});
 
 
 
